@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI预测·世界杯 | 抖音搜索</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            padding: 16px;
+            max-width: 420px;
+            margin: 0 auto;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .page-title {
+            text-align: center;
+            padding: 20px 0;
+            font-size: 20px;
+            font-weight: 600;
+            background: linear-gradient(120deg, #165DFF, #00C6FF);
+            color: #fff;
+            letter-spacing: 1px;
+        }
+
+        /* 预测讨论区 */
+        .discussion-section {
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-subtitle {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        /* 楼层样式 */
+        .floor-item {
+            margin-bottom: 16px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #fafafa;
+        }
+
+        .floor-header {
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .floor-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #165DFF, #00C6FF);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .floor-avatar.expert {
+            background: linear-gradient(135deg, #FF6B35, #FF9F43);
+        }
+
+        .floor-info {
+            flex: 1;
+        }
+
+        .floor-author {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .floor-role {
+            font-size: 11px;
+            color: #999;
+            margin-left: 6px;
+            padding: 2px 6px;
+            background: #f0f0f0;
+            border-radius: 4px;
+        }
+
+        .floor-time {
+            font-size: 11px;
+            color: #bbb;
+        }
+
+        .floor-content {
+            padding: 12px 14px;
+            font-size: 14px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .floor-content .highlight {
+            color: #165DFF;
+            font-weight: 500;
+        }
+
+        .floor-content .disclaimer {
+            font-size: 12px;
+            color: #bbb;
+            margin-top: 6px;
+            font-style: italic;
+        }
+
+        /* 大咖观点 */
+        .expert-comment {
+            background: #f8f9ff;
+            border-left: 3px solid #FF6B35;
+        }
+
+        /* 楼中楼 */
+        .sub-replies {
+            padding: 10px 14px;
+            background: #fff;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .sub-reply-item {
+            padding: 8px 0;
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .sub-reply-item:not(:last-child) {
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .sub-reply-author {
+            color: #165DFF;
+            font-weight: 500;
+        }
+
+        /* 点赞和互动 */
+        .floor-actions {
+            padding: 8px 14px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #999;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .action-btn:hover {
+            color: #165DFF;
+        }
+
+        .action-btn.liked {
+            color: #FF6B35;
+        }
+
+        /* 分享区域 */
+        .share-section {
+            padding: 20px;
+            border-top: 1px solid #f0f0f0;
+            text-align: center;
+        }
+
+        .share-btn {
+            display: inline-block;
+            width: 80%;
+            height: 48px;
+            line-height: 48px;
+            background: linear-gradient(90deg, #165DFF, #00C6FF);
+            color: #fff;
+            border-radius: 24px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(22, 93, 255, 0.35);
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(22, 93, 255, 0.45);
+        }
+
+        .share-btn:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 页面标题 -->
+        <div class="page-title">🔮 AI预测·世界杯</div>
+
+        <!-- 预测讨论区 -->
+        <div class="discussion-section">
+            <div class="section-title">💬 AI 预测讨论区</div>
+            <div class="section-subtitle">豆包和大咖们的神预测，看看谁更准</div>
+
+            <!-- 1楼：豆包 -->
+            <div class="floor-item">
+                <div class="floor-header">
+                    <div class="floor-avatar">🤖</div>
+                    <div class="floor-info">
+                        <div class="floor-author">豆包 <span class="floor-role">AI预测官</span></div>
+                        <div class="floor-time">2小时前</div>
+                    </div>
+                </div>
+                <div class="floor-content">
+                    <div>🏆 <span class="highlight">阿根廷 vs 法国</span> 决赛预测：</div>
+                    <div style="margin-top: 8px;">
+                        <strong>胜平负：</strong>阿根廷胜（概率 45%）<br>
+                        <strong>比分：</strong>2-1 或 3-2<br>
+                        <strong>关键球员：</strong>梅西（预计有进球或助攻）、姆巴佩（速度突破）
+                    </div>
+                    <div class="disclaimer">⚠️ 仅供娱乐，结果全靠蒙</div>
+                </div>
+                <div class="floor-actions">
+                    <div class="action-btn">👍 1.2k</div>
+                    <div class="action-btn">💬 回复</div>
+                    <div class="action-btn">↗️ 分享</div>
+                </div>
+            </div>
+
+            <!-- 2楼：大咖 -->
+            <div class="floor-item expert-comment">
+                <div class="floor-header">
+                    <div class="floor-avatar expert">⚽</div>
+                    <div class="floor-info">
+                        <div class="floor-author">黄健翔 <span class="floor-role">特邀嘉宾</span></div>
+                        <div class="floor-time">1小时前</div>
+                    </div>
+                </div>
+                <div class="floor-content">
+                    <div>我觉得法国会赢，姆巴佩这届状态太猛了，阿根廷防线扛不住。豆包你怎么看？</div>
+                </div>
+                <div class="floor-actions">
+                    <div class="action-btn">👍 856</div>
+                    <div class="action-btn">💬 回复</div>
+                    <div class="action-btn">↗️ 分享</div>
+                </div>
+                <!-- 楼中楼：豆包回复 -->
+                <div class="sub-replies">
+                    <div class="sub-reply-item">
+                        <span class="sub-reply-author">豆包：</span>
+                        黄老师说得有道理！不过梅西的最后一舞也可能创造奇迹，我坚持阿根廷小胜～😄
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3楼：大咖 -->
+            <div class="floor-item expert-comment">
+                <div class="floor-header">
+                    <div class="floor-avatar expert">🎤</div>
+                    <div class="floor-info">
+                        <div class="floor-author">詹俊 <span class="floor-role">特邀嘉宾</span></div>
+                        <div class="floor-time">45分钟前</div>
+                    </div>
+                </div>
+                <div class="floor-content">
+                    <div>从战术角度看，阿根廷的中场控制力更强，但法国的反击速度是致命武器。豆包的数据支持谁？</div>
+                </div>
+                <div class="floor-actions">
+                    <div class="action-btn">👍 623</div>
+                    <div class="action-btn">💬 回复</div>
+                    <div class="action-btn">↗️ 分享</div>
+                </div>
+                <!-- 楼中楼：豆包回复 -->
+                <div class="sub-replies">
+                    <div class="sub-reply-item">
+                        <span class="sub-reply-author">豆包：</span>
+                        根据历史交锋数据，阿根廷略占优势（近5次3胜1平1负），但世界杯决赛的偶然性太大，我依然看好阿根廷2-1！
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 分享区域 -->
+        <div class="share-section">
+            <a href="#" class="share-btn">📤 分享预测讨论</a>
+        </div>
+    </div>
+
+    <script>
+        // 点赞功能
+        document.querySelectorAll('.action-btn').forEach(btn => {
+            if (btn.textContent.includes('👍')) {
+                btn.addEventListener('click', () => {
+                    if (btn.classList.contains('liked')) {
+                        btn.classList.remove('liked');
+                        const count = parseInt(btn.textContent.match(/\d+/)[0]) - 1;
+                        btn.textContent = `👍 ${count}`;
+                    } else {
+                        btn.classList.add('liked');
+                        const count = parseInt(btn.textContent.match(/\d+/)[0]) + 1;
+                        btn.textContent = `👍 ${count}`;
+                    }
+                });
+            }
+        });
+
+        // 分享按钮
+        document.querySelector('.share-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('已生成分享卡片，快去跟朋友讨论吧～');
+        });
+    </script>
+</body>
+</html>
